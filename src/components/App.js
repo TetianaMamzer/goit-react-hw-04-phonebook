@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import '../index.css';
 import { nanoid } from 'nanoid';
 
@@ -60,18 +60,19 @@ export default function PhoneBook() {
     localStorage.setItem('phoneBook', JSON.stringify(contacts));
   }, [contacts]);
 
-  const getFilterContacts = () => {
+
+  const getFilterContacts = useMemo(() => {
     if (!filter) {
       return contacts;
     }
-
+console.log('hgfc')
     const normalizedFilter = filter.toLowerCase();
     const visiblePhoneList = contacts.filter(({name, number}) => {
       return (name.toLowerCase().includes(normalizedFilter) || number.includes(normalizedFilter))
     }
     );
     return visiblePhoneList;
-  }
+  }, [filter, contacts]);
 
 
   return (
@@ -81,7 +82,7 @@ export default function PhoneBook() {
         <>
           <Filter value={filter} onChange={({target})=> setFilter(target.value)} />
           <PhoneBookList
-            contacts={getFilterContacts()}
+            contacts={getFilterContacts}
             type="button"
             text="delete"
             onClick={idx =>
